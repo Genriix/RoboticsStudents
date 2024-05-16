@@ -7,8 +7,15 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="StudentsListPage">
-
-    <Grid>
-        <DataGrid x:Name="Students" ColumnWidth="*" IsReadOnly="True" SelectionMode="Single" Margin="20"/>
+    <Grid Margin="20">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Группа:" Margin="5"/>
+                <ComboBox Width="100" Margin="5"/>
+                <Button Name="Import" Content="Импорт" Click="Import_Click" Background="#FF40446D" Foreground="White"/>
+                <Button Name="Export" Content="Экспорт" Click="Export_Click" Background="#FF40446D" Foreground="White"/>
+            </StackPanel>
+            <DataGrid x:Name="Students" ColumnWidth="*" IsReadOnly="True" SelectionMode="Single" Margin="20"/>
+        </StackPanel>
     </Grid>
 </Page>
