@@ -17,9 +17,15 @@
 
         <Style TargetType="DataGrid">
             <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontFamily" Value="Times new Roman"/>
         </Style>
 
         <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Cascadia Code SemiBold"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+
+        <Style TargetType="TextBox">
             <Setter Property="FontFamily" Value="Cascadia Code SemiBold"/>
             <Setter Property="FontSize" Value="16"/>
         </Style>

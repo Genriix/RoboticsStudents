@@ -8,14 +8,28 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="StudentsListPage">
     <Grid Margin="20">
-        <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Группа:" Margin="5"/>
-                <ComboBox Width="100" Margin="5"/>
-                <Button Name="Import" Content="Импорт" Click="Import_Click" Background="#FF40446D" Foreground="White"/>
-                <Button Name="Export" Content="Экспорт" Click="Export_Click" Background="#FF40446D" Foreground="White"/>
-            </StackPanel>
-            <DataGrid x:Name="Students" ColumnWidth="*" IsReadOnly="True" SelectionMode="Single" Margin="20"/>
+        <StackPanel>
+            <Grid Height="70">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Параметр" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                    <ComboBox Name="Parameter" Width="150" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                    <TextBox Name="ParaContent" Width="250" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                    <Button Content="Найти" Click="Button_Click"/>
+                </StackPanel>
+            </Grid>
+            <ScrollViewer>
+                <DataGrid x:Name="Students" IsReadOnly="True" AutoGenerateColumns="False" SelectionMode="Single" Width="auto">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="№" Binding="{Binding id}" Width="auto"/>
+                        <DataGridTextColumn Header="Фамилия" Binding="{Binding L_Name}" Width="auto"/>
+                        <DataGridTextColumn Header="Имя" Binding="{Binding F_Name}" Width="auto"/>
+                        <DataGridTextColumn Header="Отчество" Binding="{Binding M_Name}" Width="auto"/>
+                        <DataGridTextColumn Header="Творческое объединение" Binding="{Binding CreativeName}" Width="*"/>
+                        <DataGridTextColumn Header="Группа" Binding="{Binding GroupName}" Width="auto"/>
+                        <DataGridTextColumn Header="Год обучения" Binding="{Binding StudyYear}" Width="auto"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </ScrollViewer>
         </StackPanel>
     </Grid>
 </Page>

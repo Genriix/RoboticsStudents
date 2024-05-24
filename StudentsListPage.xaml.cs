@@ -14,72 +14,59 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
 using System.IO;
-using Microsoft.Win32;
-using OfficeOpenXml;
+using Microsoft.Office.Interop.Excel;
+using System.Windows.Forms;
+using System.Data.SqlClient;
 
 namespace RoboticsStudents
 {
     /// <summary>
     /// Логика взаимодействия для MainPage.xaml
     /// </summary>
-    public partial class StudentsListPage : Page
+    public partial class StudentsListPage : System.Windows.Controls.Page
     {
         public StudentsListPage()
         {
             InitializeComponent();
-        }
-
-        private void Import_Click(object sender, RoutedEventArgs e)
-        {
-            //OpenFileDialog op = new OpenFileDialog();
-            //op.Filter = "Документ эксель(*.xlsx) | *.xlsx | Все файлы(*.*) | *.*";
-            //if (op.ShowDialog() == true)
-            //{
-            //    using (var stream = File.Open(op.FileName, FileMode.Open, FileAccess.Read))
-            //    {
-            //        using (var reader = ExcelReaderFactory.CreateReader(stream))
-            //        {
-            //            var result = reader.AsDataSet(new ExcelDataSetConfiguration{});
-            //            var dataTable = result.Tables[0];
-            //            Students.ItemsSource = dataTable.DefaultView;
-            //        }
-            //    }
-
-            //    //foreach (DataColumn column in Students.Columns)
-            //    //{
-            //    //    var binding = new Binding(column.ColumnName);
-            //    //    var dataGridColumn = new DataGridTextColumn { Header = column.ColumnName, Binding = binding };
-            //    //    Students.Columns.Add(dataGridColumn);
-            //    //}
-            //}
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Файлы Excel (*.xls;*.xlsx)|*.xls;*.xlsx|Все файлы (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == true)
+            using (SqlConnection connection = new SqlConnection(Manager.connectionString))
             {
-                FileInfo fileInfo = new FileInfo(openFileDialog.FileName);
-                using (ExcelPackage excelPackage = new ExcelPackage(fileInfo))
+                connection.Open();
+                string query = "SELECT " +
+                    "Student.id, " +
+                    "F_Name, " +
+                    "L_Name, " +
+                    "M_Name, " +
+                    "[Student/Group].StudyYear, " +
+                    "[Group].Name AS GroupName, " +
+                    "CreativeAssociation.Name AS CreativeName " +
+                    "FROM Student " +
+                    "JOIN [Student/Group] ON Student.id = [Student/Group].IdStudent " +
+                    "JOIN [Group] ON [Student/Group].IdGroup = [Group].id " +
+                    "JOIN CreativeAssociation ON [Group].IdCreativeAssociation = CreativeAssociation.id";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[1];
-                    DataTable dataTable = new DataTable();
-                    foreach (var firstRowCell in worksheet.Cells[1, 1, 1, worksheet.Dimension.Columns])
+                    using (System.Data.DataTable dataTable = new System.Data.DataTable())
                     {
-                        dataTable.Columns.Add(firstRowCell.Text);
-                    }
-                    for (int rowNumber = 2; rowNumber <= worksheet.Dimension.Rows; rowNumber++)
-                    {
-                        var row = worksheet.Cells[rowNumber, 1, rowNumber, worksheet.Dimension.Columns];
-                        DataRow dataRow = dataTable.Rows.Add();
-                        foreach (var cell in row)
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                         {
-                            dataRow[cell.Start.Column - 1] = cell.Text;
+                            try
+                            {
+                                adapter.Fill(dataTable);
+
+                                Students.ItemsSource = dataTable.DefaultView;
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Windows.MessageBox.Show("Error: " + ex.Message);
+                            }
                         }
                     }
-                    Students.ItemsSource = dataTable.DefaultView;
                 }
             }
         }
 
-        private void Export_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
 
         }
